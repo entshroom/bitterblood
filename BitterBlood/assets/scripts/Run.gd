@@ -7,7 +7,11 @@ func physicsUpdate(delta: float) -> void:
 		return
 	
 	#Add movement to velocity
-	player.velocity.x = player.getDirection() * player.walkSpeed
+	var dir = player.getDirection()
+	if dir != 0:
+		player.velocity.x = lerp(player.velocity.x, dir * player.walkSpeed, player.acceleration)
+	else:
+		player.velocity.x = lerp(player.velocity.x, 0, player.friction)
 	
 	#Get floor normal
 	var floorNormal = player.get_floor_normal()
@@ -33,7 +37,7 @@ func physicsUpdate(delta: float) -> void:
 	#Jump
 	if Input.is_action_just_pressed("jump") && player.is_on_floor():
 		stateMachine.transitionTo("Air",{doJump = true})
-	elif is_equal_approx(player.getDirection(),0.0):
+	elif is_equal_approx(dir,0.0):
 		stateMachine.transitionTo("Idle")
 	
 	#Touching Water
@@ -42,4 +46,5 @@ func physicsUpdate(delta: float) -> void:
 
 #Reset Snap Vector
 func exit() -> void:
-	player.snapVector = Vector2.ZERO
+	#player.snapVector = Vector2.ZERO
+	pass

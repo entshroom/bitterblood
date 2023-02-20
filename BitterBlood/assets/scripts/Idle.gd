@@ -1,10 +1,5 @@
 extends PlayerState
 
-#Set player's speed to 0
-func enter(_msg := {}) -> void:
-	#All properties that we need can be accessed through 'owner' (player)
-	player.velocity = Vector2.ZERO
-
 #Handle transitions to other states
 func update(_delta: float) -> void:
 	#Air Check
@@ -23,3 +18,11 @@ func update(_delta: float) -> void:
 		stateMachine.transitionTo("Air",{doJump = true})
 	elif Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right"):
 		stateMachine.transitionTo("Run")
+
+#Continue leftover movement
+func physicsUpdate(_delta: float) -> void:
+	#slow to a stop
+	player.velocity.x = lerp(player.velocity.x, 0, player.friction)
+	
+	#apply leftover movement
+	player.velocity = player.move_and_slide_with_snap(player.velocity,player.snapVector,Vector2.UP);

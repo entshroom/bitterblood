@@ -8,28 +8,78 @@ extents = Vector2( 32, 32 )
 
 [node name="World" type="Node2D"]
 
-[node name="Ground" type="StaticBody2D" parent="."]
+[node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2( 944, 808 )
 scale = Vector2( 108.44, 0.88 )
+collision_layer = 2
 
-[node name="Sprite" type="Sprite" parent="Ground"]
+[node name="Sprite" type="Sprite" parent="Floor"]
 texture = ExtResource( 1 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
 shape = SubResource( 1 )
 
-[node name="Ground2" type="StaticBody2D" parent="."]
-position = Vector2( 1608, 640 )
-scale = Vector2( 4.24299, 0.610688 )
+[node name="Wall" type="StaticBody2D" parent="."]
+position = Vector2( 0, 376 )
+scale = Vector2( 0.784913, 12.56 )
+collision_layer = 2
 
-[node name="Sprite" type="Sprite" parent="Ground2"]
+[node name="Sprite" type="Sprite" parent="Wall"]
 texture = ExtResource( 1 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall"]
+shape = SubResource( 1 )
+
+[node name="Wall2" type="StaticBody2D" parent="."]
+position = Vector2( 216, 256 )
+scale = Vector2( 0.784913, 7.4 )
+collision_layer = 2
+
+[node name="Sprite" type="Sprite" parent="Wall2"]
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall2"]
+shape = SubResource( 1 )
+
+[node name="DropPlatform" type="StaticBody2D" parent="."]
+position = Vector2( 1320, 616 )
+scale = Vector2( 4.92, 0.36 )
+collision_layer = 0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="DropPlatform"]
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DropPlatform"]
+shape = SubResource( 1 )
+one_way_collision = true
+
+[node name="Platform" type="StaticBody2D" parent="."]
+position = Vector2( 1608, 624 )
+scale = Vector2( 4.24299, 0.610688 )
+collision_layer = 2
+
+[node name="Sprite" type="Sprite" parent="Platform"]
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+shape = SubResource( 1 )
+
+[node name="Platform2" type="StaticBody2D" parent="."]
+position = Vector2( 1032, 624 )
+scale = Vector2( 4.24299, 0.610688 )
+collision_layer = 2
+
+[node name="Sprite" type="Sprite" parent="Platform2"]
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
 shape = SubResource( 1 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 936, 512 )
+position = Vector2( 640, 656 )
 gravity = 1300
 walkSpeed = 400
 jumpHeight = 700
