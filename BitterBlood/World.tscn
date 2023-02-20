@@ -30,6 +30,6 @@ shape = SubResource( 1 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 936, 512 )
-gravity = 800
+gravity = 1300
 walkSpeed = 400
-jumpHeight = 600
+jumpHeight = 700
