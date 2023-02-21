@@ -9,6 +9,7 @@ export(float) var friction = 0.1;
 export(float) var acceleration = 0.5;
 export(int) var jumpHeight = 100; 
 export(float) var jumpCancel = 0.7;
+export(float) var slopeThreshold = 0.25;
 export(int) var hp = 0;
 
 export(Resource) var healthManager;
@@ -23,6 +24,10 @@ var velocity = Vector2();
 var snapVector = Vector2();
 var floorNormal =  Vector2.UP;
 var canSwim = false
+
+#Trackers
+var direction = 1
+var d = 1
 
 
 func drop():
@@ -55,5 +60,7 @@ func leaveWater():
 	canSwim = false
 
 func _process(_delta):
-	#print(velocity.x)
+	d = getDirection()
+	if d != 0:
+		direction = d
 	pass

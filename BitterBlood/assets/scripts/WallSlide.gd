@@ -5,7 +5,6 @@ var dir
 func enter(msg := {}) -> void:
 	if msg.has("wallDir"):
 		dir = msg.wallDir
-		print(dir)
 
 #Slide physics
 func physicsUpdate(delta: float) -> void:

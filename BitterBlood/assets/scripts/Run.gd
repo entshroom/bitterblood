@@ -13,8 +13,9 @@ func physicsUpdate(delta: float) -> void:
 	else:
 		player.velocity.x = lerp(player.velocity.x, 0, player.friction)
 	
-	#Get floor normal
+	#Get floor normal and angle
 	var floorNormal = player.get_floor_normal()
+	var floorAngle = player.get_floor_angle()
 
 	#Configure Slope Snap
 	if (player.is_on_floor()):
@@ -43,6 +44,10 @@ func physicsUpdate(delta: float) -> void:
 	#Touching Water
 	if player.canSwim:
 		stateMachine.transitionTo("Water")
+		
+	#Sliding
+	if floorAngle > player.slopeThreshold:
+		stateMachine.transitionTo("Slide")
 
 #Reset Snap Vector
 func exit() -> void:

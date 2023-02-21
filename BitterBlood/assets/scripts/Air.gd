@@ -2,6 +2,7 @@ extends PlayerState
 
 var lastDir
 var dir
+var airControl = true
 
 func enter(msg := {}) -> void:
 	if msg.has("doJump"):
@@ -9,6 +10,8 @@ func enter(msg := {}) -> void:
 		player.snapVector = Vector2.ZERO
 	if msg.has("doDrop"):
 		player.drop()
+	if (msg.has("airToggle")):
+		airControl = msg.airToggle
 
 func physicsUpdate(delta: float) -> void:
 	
@@ -17,13 +20,20 @@ func physicsUpdate(delta: float) -> void:
 		lastDir = dir
 	dir = player.getDirection()
 
-	if dir != 0:
-		player.velocity.x = lerp(player.velocity.x, dir * player.walkSpeed, player.acceleration)
-	else:
-		player.velocity.x = lerp(player.velocity.x, 0, player.friction)
+	if airControl:
+		if dir != 0:
+			player.velocity.x = lerp(player.velocity.x, dir * player.walkSpeed, player.acceleration)
+			pass
+		else:
+			player.velocity.x = lerp(player.velocity.x, 0, player.friction)
+			pass
 
 	#Gravity
-	player.velocity.y += delta * player.gravity
+	if player.velocity.y > 0:
+		player.velocity.y += delta * player.gravity * 1.7
+	else:
+		player.velocity.y += delta * player.gravity
+	
 	
 	#Variable jump height
 	if (!player.is_on_floor() && Input.is_action_just_released("jump") && player.velocity.y < 0):
@@ -45,5 +55,9 @@ func physicsUpdate(delta: float) -> void:
 
 	#Wall Sliding
 	if player.isNearWall():
-		print("Enter Wall Slide State")
 		stateMachine.transitionTo("WallSlide",{wallDir = lastDir})
+
+#Reset State Vars
+func exit() -> void:
+	airControl = true;
+	pass
