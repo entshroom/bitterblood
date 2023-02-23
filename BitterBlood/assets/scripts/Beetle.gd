@@ -17,8 +17,7 @@ func _physics_process(_delta):
 func flip():
 	cast.position.x *= -1
 	speed *= -1
-	print(cast.position.x)
 
 
-func _on_Hitbox_body_entered(_body):
-	get_tree().reload_current_scene()
+func _on_Hitbox_body_entered(body):
+	body.takeDamage(1)

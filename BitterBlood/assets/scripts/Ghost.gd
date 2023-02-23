@@ -53,5 +53,5 @@ func _on_Timer_timeout():
 		enemyState = state.WANDER
 
 
-func _on_Ghost_body_entered(_body):
-	get_tree().reload_current_scene()
+func _on_Ghost_body_entered(body):
+	body.hp -= 1
