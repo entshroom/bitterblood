@@ -23,6 +23,11 @@ export(Resource) var healthManager;
 onready var screenSize = get_viewport_rect().size;
 onready var sprite = $Sprite;
 onready var cast = $Wallchecker;
+onready var anim = $AnimationPlayer;
+onready var rapier = $Sprite/Rapier/Hitbox
+
+#Data Management
+var sM
 
 #Physics
 var velocity = Vector2();
@@ -34,6 +39,10 @@ var canSwim = false
 var direction = 1
 var d = 1
 
+func _ready():
+	sM = owner
+	add_to_group("Persistent")
+	add_to_group("Globals")
 
 func drop():
 	position.y += 1;
@@ -55,10 +64,10 @@ func getDirection(animate := true) -> int:
 	#Animate and update casters
 	if animate:
 		if spd == 1:
-			sprite.flip_h = true;
+			sprite.scale.x = 0.1;
 			cast.cast_to.x = 30
 		elif spd == -1:
-			sprite.flip_h = false;
+			sprite.scale.x = -0.1;
 			cast.cast_to.x = -30
 
 	return spd
@@ -73,4 +82,29 @@ func _process(_delta):
 	d = getDirection()
 	if d != 0:
 		direction = d
-	pass
+
+func saveData():
+	
+	#Positional Data
+	var subName = sM.sceneName
+	sM.state.sceneIndex[subName]["PlayerPosition"] = position
+	
+	#Health
+	sM.state.sceneIndex["HP"] = hp
+	print("HP Saved: " + str(sM.state.sceneIndex["HP"]))
+
+func loadData():
+
+	#Positional Data
+	if sM.state.sceneIndex[sM.sceneName].has("PlayerPosition"):
+		position = sM.state.sceneIndex[sM.sceneName]["PlayerPosition"]
+	
+	#HP
+	if sM.state.sceneIndex.has("HP"):
+		hp = sM.state.sceneIndex["HP"]
+
+
+func _on_Hitbox_area_entered(area):
+	#KILL ALL WHO OPPOSE US
+	if area.is_in_group("Enemies"):
+		area.owner.takeDamage(1)

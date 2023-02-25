@@ -49,6 +49,10 @@ func physicsUpdate(delta: float) -> void:
 	if floorAngle > player.slopeThreshold:
 		stateMachine.transitionTo("Slide")
 
+	#Attack
+	if Input.is_action_just_pressed("attack"):
+		stateMachine.transitionTo("Attack")
+
 #Reset Snap Vector
 func exit() -> void:
 	#player.snapVector = Vector2.ZERO

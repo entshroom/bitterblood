@@ -18,6 +18,10 @@ func update(_delta: float) -> void:
 		stateMachine.transitionTo("Air",{doJump = true})
 	elif Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right"):
 		stateMachine.transitionTo("Run")
+	
+	#Attack
+	if Input.is_action_just_pressed("attack"):
+		stateMachine.transitionTo("Attack")
 
 #Continue leftover movement
 func physicsUpdate(_delta: float) -> void:

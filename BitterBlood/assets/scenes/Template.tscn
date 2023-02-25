@@ -1,0 +1,56 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/resources/SceneManager.tres" type="Resource" id=1]
+[ext_resource path="res://assets/scripts/StateManager.gd" type="Script" id=2]
+[ext_resource path="res://assets/prefabs/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Health.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/prefabs/Map.tscn" type="PackedScene" id=5]
+[ext_resource path="res://assets/scenes/Tileset.tres" type="TileSet" id=6]
+
+[sub_resource type="Environment" id=1]
+background_mode = 4
+ambient_light_energy = 0.0
+glow_enabled = true
+glow_levels/4 = true
+glow_intensity = 0.12
+glow_strength = 0.54
+glow_bloom = 1.0
+glow_blend_mode = 0
+adjustment_brightness = 0.32
+adjustment_contrast = 1.08
+adjustment_saturation = 0.75
+
+[node name="Template" type="Node2D"]
+script = ExtResource( 2 )
+state = ExtResource( 1 )
+roomSize = Vector2( 1, 1 )
+
+[node name="Player" parent="." instance=ExtResource( 3 )]
+gravity = 1300
+walkSpeed = 400
+friction = 0.2
+jumpHeight = 700
+slopeThreshold = 0.2
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Map" parent="UI" instance=ExtResource( 5 )]
+
+[node name="Health" parent="UI" instance=ExtResource( 4 )]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Environment"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 128, 128 )
+collision_layer = 2
+format = 1
+tile_data = PoolIntArray( 524288, 1, 0, 524289, 1, 0, 524290, 1, 0, 524291, 1, 0, 524292, 1, 0, 524293, 1, 0, 524294, 1, 0, 524295, 1, 0, 524296, 1, 0, 524297, 1, 0, 524298, 1, 0, 524299, 1, 0, 524300, 1, 0, 524301, 1, 0, 524302, 1, 0, 589824, 4, 0, 589825, 4, 0, 589826, 4, 0, 589827, 4, 0, 589828, 4, 0, 589829, 4, 0, 589830, 4, 0, 589831, 4, 0, 589832, 4, 0, 589833, 4, 0, 589834, 4, 0, 589835, 4, 0, 589836, 4, 0, 589837, 4, 0, 589838, 4, 0 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource( 1 )
+
+[node name="CanvasModulate" type="CanvasModulate" parent="Environment"]
+color = Color( 0.545098, 0.54902, 0.694118, 1 )
+
+[connection signal="health_changed" from="Player" to="UI/Health" method="_on_Player_health_changed"]

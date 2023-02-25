@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/scenes/Template.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/prefabs/Beetle.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/prefabs/sceneTransition.tscn" type="PackedScene" id=5]
+
+[node name="Castle1" instance=ExtResource( 1 )]
+roomCoords = Vector2( 12, 5 )
+roomSize = Vector2( 5, 2 )
+
+[node name="Player" parent="." index="0"]
+position = Vector2( 1089, 940 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="TileMap" parent="Environment" index="0"]
+tile_data = PoolIntArray( 13, 4, 0, 14, 4, 0, 15, 4, 0, 16, 4, 0, 17, 4, 0, 18, 4, 0, 65549, 4, 0, 65550, 4, 0, 65551, 4, 0, 65552, 4, 0, 65553, 4, 0, 65554, 4, 0, 131085, 4, 0, 131086, 4, 0, 131087, 4, 0, 131088, 4, 0, 131089, 4, 0, 131090, 4, 0, 196621, 7, 0, 196622, 7, 0, 196623, 7, 0, 196624, 7, 0, 196625, 7, 0, 196626, 7, 0, 524288, 1, 0, 524289, 1, 0, 524290, 1, 0, 524291, 1, 0, 524292, 1, 0, 524293, 1, 0, 524294, 1, 0, 524295, 1, 0, 524296, 1, 0, 524297, 1, 0, 524298, 1, 0, 524299, 1, 0, 524300, 1, 0, 524301, 1, 0, 524302, 1, 0, 524303, 1, 0, 524304, 1, 0, 524305, 1, 0, 524306, 1, 0, 589824, 4, 0, 589825, 4, 0, 589826, 4, 0, 589827, 4, 0, 589828, 4, 0, 589829, 4, 0, 589830, 4, 0, 589831, 4, 0, 589832, 4, 0, 589833, 4, 0, 589834, 4, 0, 589835, 4, 0, 589836, 4, 0, 589837, 4, 0, 589838, 4, 0, 589839, 4, 0, 589840, 4, 0, 589841, 4, 0, 589842, 4, 0 )
+
+[node name="sceneTransition" parent="Environment" index="3" instance=ExtResource( 5 )]
+position = Vector2( 2238, 790 )
+sceneToLoad = "res://assets/scenes/Castle2.tscn"
+direction = -1
+
+[node name="sceneTransition2" parent="Environment" index="4" instance=ExtResource( 5 )]
+position = Vector2( 121, 788 )
+sceneToLoad = "res://assets/scenes/World.tscn"
+
+[node name="Beetle" parent="." index="3" instance=ExtResource( 2 )]
+position = Vector2( 608, 992 )

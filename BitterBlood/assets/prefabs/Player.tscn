@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://assets/sprites/zofiaTemp2.png" type="Texture" id=1]
 [ext_resource path="res://assets/scripts/Player.gd" type="Script" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://assets/scripts/WallSlide.gd" type="Script" id=7]
 [ext_resource path="res://assets/scripts/Slide.gd" type="Script" id=8]
 [ext_resource path="res://assets/scenes/Gradient.tres" type="Gradient" id=9]
+[ext_resource path="res://assets/sprites/holyWater.png" type="Texture" id=10]
+[ext_resource path="res://assets/scripts/Attack.gd" type="Script" id=11]
 
 [sub_resource type="GradientTexture2D" id=2]
 gradient = ExtResource( 9 )
@@ -16,10 +18,59 @@ fill = 1
 fill_from = Vector2( 0.5125, 0.459375 )
 fill_to = Vector2( 0.904167, 0.633333 )
 
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 305, 240 )
+
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 16, 60 )
 
+[sub_resource type="Animation" id=3]
+resource_name = "Attack"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite/Rapier:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 640, -600 ), Vector2( 850, 10 ), Vector2( 500, 570 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("StateMachine/Attack")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.2 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "endAnimation"
+} ]
+}
+
+[sub_resource type="Animation" id=4]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite/Rapier:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 62, -78 ) ]
+}
+
 [node name="Player" type="KinematicBody2D"]
+collision_mask = 0
 script = ExtResource( 2 )
 
 [node name="Light2D" type="Light2D" parent="."]
@@ -34,21 +85,48 @@ __meta__ = {
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 0.1, 0.1 )
 texture = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Rapier" type="Sprite" parent="Sprite"]
+position = Vector2( 62, -78 )
+scale = Vector2( 1, 1 )
+texture = ExtResource( 10 )
+
+[node name="Hitbox" type="Area2D" parent="Sprite/Rapier"]
+collision_mask = 4
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite/Rapier/Hitbox"]
+position = Vector2( 45, 6.10352e-05 )
+shape = SubResource( 5 )
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 12 )
+scale = Vector2( 1, 1 )
 shape = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Camera" type="Camera2D" parent="."]
 offset = Vector2( 0, -200 )
 current = true
 smoothing_enabled = true
 smoothing_speed = 6.0
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Wallchecker" type="RayCast2D" parent="."]
 enabled = true
 cast_to = Vector2( 30, 0 )
 collision_mask = 2
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -69,6 +147,9 @@ script = ExtResource( 7 )
 [node name="Slide" type="Node" parent="StateMachine"]
 script = ExtResource( 8 )
 
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource( 11 )
+
 [node name="Light2D2" type="Light2D" parent="."]
 position = Vector2( -4, -58 )
 texture = SubResource( 2 )
@@ -76,6 +157,9 @@ offset = Vector2( 0, 3.164 )
 texture_scale = 0.5
 color = Color( 0.752941, 0.67451, 0, 1 )
 energy = 0.42
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Light2D3" type="Light2D" parent="."]
 position = Vector2( 3, -58 )
@@ -84,3 +168,12 @@ offset = Vector2( 0, 3.164 )
 texture_scale = 0.5
 color = Color( 0.752941, 0.67451, 0, 1 )
 energy = 0.42
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Attack = SubResource( 3 )
+anims/RESET = SubResource( 4 )
+
+[connection signal="area_entered" from="Sprite/Rapier/Hitbox" to="." method="_on_Hitbox_area_entered"]

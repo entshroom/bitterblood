@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/scripts/Map.gd" type="Script" id=1]
+[ext_resource path="res://assets/sprites/grid.png" type="Texture" id=2]
+
+[node name="Map" type="TextureRect"]
+pause_mode = 2
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1280.0
+margin_bottom = -600.0
+texture = ExtResource( 2 )
+script = ExtResource( 1 )
+roomColour = Color( 0.129412, 0.129412, 0.129412, 1 )
