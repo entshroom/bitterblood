@@ -15,7 +15,7 @@ export(float) var jumpCancel = 0.7;
 export(float) var slopeThreshold = 0.25;
 
 #Health
-export(int) var hp = 5;
+export(int) var hpMax = 5;
 
 export(Resource) var healthManager;
 
@@ -25,6 +25,9 @@ onready var sprite = $Sprite;
 onready var cast = $Wallchecker;
 onready var anim = $AnimationPlayer;
 onready var rapier = $Sprite/Rapier/Hitbox
+
+#Utility
+var hp = hpMax
 
 #Data Management
 var sM
@@ -49,6 +52,10 @@ func drop():
 	
 func isNearWall():
 	return cast.is_colliding()
+
+func setHealth(value = hpMax):
+	hp = value
+	emit_signal("health_changed", hp)
 
 func takeDamage(value):
 	hp -= value
@@ -90,6 +97,7 @@ func saveData():
 	sM.state.sceneIndex[subName]["PlayerPosition"] = position
 	
 	#Health
+	sM.state.sceneIndex["MaxHP"] = hpMax
 	sM.state.sceneIndex["HP"] = hp
 	print("HP Saved: " + str(sM.state.sceneIndex["HP"]))
 
@@ -102,6 +110,9 @@ func loadData():
 	#HP
 	if sM.state.sceneIndex.has("HP"):
 		hp = sM.state.sceneIndex["HP"]
+
+	if sM.state.sceneIndex.has("MaxHP"):
+		hpMax = sM.state.sceneIndex["MaxHP"]
 
 
 func _on_Hitbox_area_entered(area):
