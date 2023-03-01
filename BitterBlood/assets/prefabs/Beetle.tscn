@@ -1,30 +1,66 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://assets/scripts/Beetle.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://assets/sprites/Beetlesheet.png" type="Texture" id=2]
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 210, 90 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 210, 0, 210, 90 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 420, 0, 210, 90 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 630, 0, 210, 90 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 840, 0, 210, 90 )
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"loop": true,
+"name": "default",
+"speed": 12.0
+} ]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 24, 28 )
+extents = Vector2( 64, 28 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 32, 32 )
+extents = Vector2( 102, 32 )
 
 [node name="Beetle" type="KinematicBody2D"]
 collision_layer = 4
-collision_mask = 3
+collision_mask = 2
 script = ExtResource( 1 )
 speed = 100
 hp = 3
 
-[node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 2 )
+[node name="Sprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -12 )
+frames = SubResource( 8 )
+frame = 4
+playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 4 )
+position = Vector2( 8, 4 )
 shape = SubResource( 1 )
 
 [node name="Floorchecker" type="RayCast2D" parent="."]
-position = Vector2( 32, 0 )
+position = Vector2( 72, 0 )
 enabled = true
 cast_to = Vector2( 0, 40 )
 collision_mask = 2
@@ -33,6 +69,5 @@ collision_mask = 2
 collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2( 2, 0 )
 shape = SubResource( 2 )
-
-[connection signal="body_entered" from="Hitbox" to="." method="_on_Hitbox_body_entered"]

@@ -1,13 +1,79 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=8 format=2]
 
+[ext_resource path="res://assets/sprites/UI/HUD_Icon.png" type="Texture" id=1]
 [ext_resource path="res://assets/scripts/Health.gd" type="Script" id=2]
+[ext_resource path="res://assets/sprites/ribbonBottom.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/ribbonTop.png" type="Texture" id=4]
+[ext_resource path="res://assets/scripts/Bloodlust.gd" type="Script" id=5]
 
-[node name="Health" type="HBoxContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 30.0
-margin_top = 30.0
-margin_right = 30.0
-margin_bottom = 30.0
-rect_scale = Vector2( 0.15, 0.15 )
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.219608, 0.0392157, 0.0705882, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 0.592157 )
+
+[node name="Control" type="Control"]
+margin_right = 1920.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 2 )
+
+[node name="RibbonBottom" type="NinePatchRect" parent="."]
+show_behind_parent = true
+margin_left = 178.0
+margin_top = 63.0
+margin_right = 657.0
+margin_bottom = 163.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 3 )
+patch_margin_left = 65
+patch_margin_top = 47
+patch_margin_right = 53
+patch_margin_bottom = 49
+
+[node name="RibbonTop" type="NinePatchRect" parent="."]
+anchor_left = 0.0927083
+anchor_top = 0.0583333
+anchor_right = 0.342187
+anchor_bottom = 0.150926
+texture = ExtResource( 4 )
+patch_margin_left = 86
+patch_margin_top = 46
+patch_margin_right = 44
+patch_margin_bottom = 48
+
+[node name="Bloodlust" type="ProgressBar" parent="RibbonTop"]
+show_behind_parent = true
+margin_left = 42.0
+margin_top = 36.0
+margin_right = 450.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 100.0
+percent_visible = false
+script = ExtResource( 5 )
+drainRate = 0.08
+
+[node name="Profile" type="TextureRect" parent="."]
+margin_left = 4.0
+margin_right = 224.0
+margin_bottom = 220.0
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Health" type="HBoxContainer" parent="."]
+margin_left = 220.0
+margin_top = 82.0
+margin_right = 220.0
+margin_bottom = 232.0
+rect_scale = Vector2( 0.7, 0.7 )
+__meta__ = {
+"_edit_lock_": true
+}

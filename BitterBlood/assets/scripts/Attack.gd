@@ -1,9 +1,7 @@
 extends PlayerState
 
 func enter(msg := {}) -> void:
-	#Enable Area2D and play Animation
-	player.rapier.monitoring = true
-	player.rapier.monitorable = true
+	#play Animation
 	player.anim.play("Attack")
 
 
