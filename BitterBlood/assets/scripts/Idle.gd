@@ -25,6 +25,7 @@ func update(_delta: float) -> void:
 
 #Continue leftover movement
 func physicsUpdate(_delta: float) -> void:
+
 	#slow to a stop
 	player.velocity.x = lerp(player.velocity.x, 0, player.friction)
 	

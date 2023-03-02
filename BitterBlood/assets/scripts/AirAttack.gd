@@ -3,6 +3,11 @@ extends PlayerState
 export var animationOver = false
 
 func enter(msg := {}) -> void:
+	
+	#Propel Forward
+	player.velocity.y = 0
+	player.velocity.x = 500 * player.getDirection()
+	 
 	#play Animation
 	animationOver = false
 	if !player.anim.is_playing():
@@ -12,11 +17,9 @@ func update(_delta: float) -> void:
 	if animationOver:
 		player.anim.stop(true)
 		stateMachine.transitionTo("Run")
+		print("Back to run...")
 
 func physicsUpdate(_delta: float) -> void:
-	
-	#slow to a stop
-	player.velocity.x = lerp(player.velocity.x, 0, player.friction)
 	
 	#apply leftover movement
 	player.velocity = player.move_and_slide_with_snap(player.velocity,player.snapVector,Vector2.UP);

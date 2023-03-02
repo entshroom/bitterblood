@@ -21,10 +21,12 @@ export(int) var hpMax = 5;
 #Children & Preloaded
 onready var screenSize = get_viewport_rect().size;
 onready var sprite = $Sprite;
-onready var cast = $Wallchecker;
 onready var anim = $AnimationPlayer;
 onready var rapier = $Sprite/Rapier/Hitbox
 onready var stateMachine = $StateMachine
+onready var cast = $Wallchecker;
+onready var cast2 = $Wallchecker2;
+onready var cast3 = $Wallchecker3;
 
 #Utility
 var hp
@@ -42,6 +44,9 @@ var canSwim = false
 var direction = 1
 var d = 1
 
+#Cooldowns
+var canAirAttack = true
+
 func _ready():
 	sM = owner
 	add_to_group("Persistent")
@@ -50,10 +55,13 @@ func _ready():
 	hp = hpMax
 
 func drop():
-	position.y += 1;
+	position.y += 5;
 	
 func isNearWall():
-	return cast.is_colliding()
+	if cast.is_colliding() && cast2.is_colliding() && cast3.is_colliding():
+		return true
+	else:
+		return false
 
 func setHealth(value = hpMax):
 	hp = value
@@ -77,11 +85,21 @@ func getDirection(animate := true) -> int:
 	#Animate and update casters
 	if animate:
 		if spd == 1:
-			sprite.scale.x = 0.1;
+			sprite.scale.x = 0.6;
+			sprite.offset.x = 30
+			
+			#Wall Checkers
 			cast.cast_to.x = 30
+			cast2.cast_to.x = 30
+			cast3.cast_to.x = 30
 		elif spd == -1:
-			sprite.scale.x = -0.1;
-			cast.cast_to.x = -30
+			sprite.scale.x = -0.6;
+			sprite.offset.x = 50
+			
+			#Wall Checkers
+			cast.cast_to.x = -70
+			cast2.cast_to.x = -70
+			cast3.cast_to.x = -70
 
 	return spd
 
@@ -95,14 +113,17 @@ func _process(_delta):
 	d = getDirection()
 	if d != 0:
 		direction = d
-	
-	
+
+
+func _physics_process(_delta):
+	if !canAirAttack && is_on_floor() || is_on_wall():
+		canAirAttack = true
 
 func saveData():
 	
 	#Positional Data
-	var subName = sM.sceneName
-	sM.state.sceneIndex[subName]["PlayerPosition"] = position
+	#var subName = sM.sceneName
+	#sM.state.sceneIndex[subName]["PlayerPosition"] = position
 	
 	#Health
 	sM.state.sceneIndex["MaxHP"] = hpMax
@@ -112,8 +133,8 @@ func saveData():
 func loadData():
 
 	#Positional Data
-	if sM.state.sceneIndex[sM.sceneName].has("PlayerPosition"):
-		position = sM.state.sceneIndex[sM.sceneName]["PlayerPosition"]
+	if sM.state.sceneIndex.has("NextPlayerPosition"):
+		position = sM.state.sceneIndex["NextPlayerPosition"]
 	
 	#HP
 	if sM.state.sceneIndex.has("HP"):
@@ -121,7 +142,7 @@ func loadData():
 
 	if sM.state.sceneIndex.has("MaxHP"):
 		hpMax = sM.state.sceneIndex["MaxHP"]
-		print(hpMax)
+		print("HP Max" + str(hpMax))
 
 
 func _on_Hitbox_area_entered(area):
@@ -131,17 +152,18 @@ func _on_Hitbox_area_entered(area):
 		
 		if area.owner.hp <= 0 && area.owner.bloodlust:
 			setHealth(hp + 1)
-			print("Should heal?")
 		else:
 			emit_signal("bloodlust_gained", 10)
 
 
-func _on_Hurtbox_area_entered(_area):
-	takeDamage(1)
-	emit_signal("bloodlust_gained", 5)
+func _on_Hurtbox_area_entered(area):
+	if area.is_in_group("Enemies"):
+		takeDamage(1)
+		emit_signal("bloodlust_gained", 5)
 
 
 func _on_Hurtbox_body_entered(body):
 	if body.is_in_group("Spikes"):
 		takeDamage(1)
+		print("Spikes")
 		emit_signal("bloodlust_gained", 5)

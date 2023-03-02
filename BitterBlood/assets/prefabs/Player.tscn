@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=2]
 
-[ext_resource path="res://assets/sprites/zofiaTemp2.png" type="Texture" id=1]
+[ext_resource path="res://assets/sprites/zofia/zofia.png" type="Texture" id=1]
 [ext_resource path="res://assets/scripts/Player.gd" type="Script" id=2]
 [ext_resource path="res://assets/scripts/StateMachine.gd" type="Script" id=3]
 [ext_resource path="res://assets/scripts/Idle.gd" type="Script" id=4]
@@ -8,22 +8,17 @@
 [ext_resource path="res://assets/scripts/Air.gd" type="Script" id=6]
 [ext_resource path="res://assets/scripts/WallSlide.gd" type="Script" id=7]
 [ext_resource path="res://assets/scripts/Slide.gd" type="Script" id=8]
-[ext_resource path="res://assets/scenes/Gradient.tres" type="Gradient" id=9]
+[ext_resource path="res://assets/scripts/AirAttack.gd" type="Script" id=9]
 [ext_resource path="res://assets/sprites/holyWater.png" type="Texture" id=10]
 [ext_resource path="res://assets/scripts/Attack.gd" type="Script" id=11]
 [ext_resource path="res://assets/scripts/Knockback.gd" type="Script" id=12]
-
-[sub_resource type="GradientTexture2D" id=2]
-gradient = ExtResource( 9 )
-fill = 1
-fill_from = Vector2( 0.5125, 0.459375 )
-fill_to = Vector2( 0.904167, 0.633333 )
+[ext_resource path="res://assets/sound/footstepsCarpet.ogg" type="AudioStream" id=13]
 
 [sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 305, 240 )
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 16, 60 )
+extents = Vector2( 35.5, 151.5 )
 
 [sub_resource type="Animation" id=3]
 resource_name = "Attack"
@@ -31,40 +26,62 @@ length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite/Rapier:position")
 tracks/0/interp = 2
-tracks/0/loop_wrap = true
+tracks/0/loop_wrap = false
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"transitions": PoolRealArray( 2, 2, 1 ),
 "update": 0,
 "values": [ Vector2( 640, -600 ), Vector2( 850, 10 ), Vector2( 500, 570 ) ]
 }
-tracks/1/type = "method"
-tracks/1/path = NodePath("StateMachine/Attack")
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite/Rapier/Hitbox:monitoring")
 tracks/1/interp = 1
-tracks/1/loop_wrap = true
+tracks/1/loop_wrap = false
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.2 ),
-"transitions": PoolRealArray( 1 ),
-"values": [ {
-"args": [  ],
-"method": "endAnimation"
-} ]
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0, 0 ),
+"update": 1,
+"values": [ true, false ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Sprite/Rapier/Hitbox:monitoring")
+tracks/2/path = NodePath("StateMachine/Attack:animationOver")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0 ),
+"times": PoolRealArray( 0.2 ),
+"transitions": PoolRealArray( 0 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("StateMachine/AirAttack:animationOver")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0.2 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Sprite/Rapier:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -93,56 +110,40 @@ tracks/1/keys = {
 "update": 0,
 "values": [ false ]
 }
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite/Rapier:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
 
 [sub_resource type="RectangleShape2D" id=6]
-extents = Vector2( 21, 62.5 )
+extents = Vector2( 46.5, 162 )
 
 [node name="Player" type="KinematicBody2D"]
 collision_mask = 0
 script = ExtResource( 2 )
+gravity = 2500
+walkSpeed = 900
+friction = 0.2
+jumpHeight = 1700
+jumpCancel = 0.3
+slopeThreshold = 0.2
 hpMax = 3
 
-[node name="Lights" type="Node" parent="."]
-
-[node name="Light2D" type="Light2D" parent="Lights"]
-texture = SubResource( 2 )
-texture_scale = 8.51
-energy = 1.56
-mode = 2
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="Light2D2" type="Light2D" parent="Lights"]
-position = Vector2( -4, -58 )
-texture = SubResource( 2 )
-offset = Vector2( 0, 3.164 )
-texture_scale = 0.5
-color = Color( 0.752941, 0.67451, 0, 1 )
-energy = 0.42
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="Light2D3" type="Light2D" parent="Lights"]
-position = Vector2( 3, -58 )
-texture = SubResource( 2 )
-offset = Vector2( 0, 3.164 )
-texture_scale = 0.5
-color = Color( 0.752941, 0.67451, 0, 1 )
-energy = 0.42
-__meta__ = {
-"_edit_lock_": true
-}
-
 [node name="Sprite" type="Sprite" parent="."]
-scale = Vector2( 0.1, 0.1 )
+scale = Vector2( 0.6, 0.6 )
 texture = ExtResource( 1 )
-__meta__ = {
-"_edit_lock_": true
-}
+offset = Vector2( -20, 0 )
 
 [node name="Rapier" type="Sprite" parent="Sprite"]
+visible = false
 position = Vector2( 62, -78 )
 texture = ExtResource( 10 )
 
@@ -156,7 +157,7 @@ position = Vector2( 45, 6.10352e-05 )
 shape = SubResource( 5 )
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 12 )
+position = Vector2( -7.5, 26.5 )
 shape = SubResource( 1 )
 __meta__ = {
 "_edit_lock_": true
@@ -165,6 +166,7 @@ __meta__ = {
 [node name="Camera" type="Camera2D" parent="."]
 offset = Vector2( 0, -200 )
 current = true
+zoom = Vector2( 2, 2 )
 smoothing_enabled = true
 smoothing_speed = 6.0
 __meta__ = {
@@ -172,12 +174,22 @@ __meta__ = {
 }
 
 [node name="Wallchecker" type="RayCast2D" parent="."]
+position = Vector2( 16, 0 )
 enabled = true
 cast_to = Vector2( 30, 0 )
 collision_mask = 2
-__meta__ = {
-"_edit_lock_": true
-}
+
+[node name="Wallchecker2" type="RayCast2D" parent="."]
+position = Vector2( 16, 160 )
+enabled = true
+cast_to = Vector2( 30, 0 )
+collision_mask = 2
+
+[node name="Wallchecker3" type="RayCast2D" parent="."]
+position = Vector2( 16, -120 )
+enabled = true
+cast_to = Vector2( 30, 0 )
+collision_mask = 2
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -200,6 +212,11 @@ script = ExtResource( 8 )
 
 [node name="Attack" type="Node" parent="StateMachine"]
 script = ExtResource( 11 )
+animationOver = true
+
+[node name="AirAttack" type="Node" parent="StateMachine"]
+script = ExtResource( 9 )
+animationOver = true
 
 [node name="Knockback" type="Node" parent="StateMachine"]
 script = ExtResource( 12 )
@@ -212,8 +229,14 @@ anims/RESET = SubResource( 4 )
 collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2( 0, 12.5 )
+position = Vector2( -8.5, 11 )
 shape = SubResource( 6 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 13 )
 
 [connection signal="area_entered" from="Sprite/Rapier/Hitbox" to="." method="_on_Hitbox_area_entered"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]

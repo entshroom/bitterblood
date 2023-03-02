@@ -56,6 +56,11 @@ func physicsUpdate(delta: float) -> void:
 	#Wall Sliding
 	if player.isNearWall():
 		stateMachine.transitionTo("WallSlide",{wallDir = lastDir})
+		
+	#Attack
+	if  Input.is_action_just_pressed("attack") && player.canAirAttack:
+		player.canAirAttack = false
+		stateMachine.transitionTo("AirAttack")
 
 #Reset State Vars
 func exit() -> void:

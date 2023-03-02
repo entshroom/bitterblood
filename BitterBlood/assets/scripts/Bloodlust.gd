@@ -12,6 +12,9 @@ enum state{
 
 func _ready():
 	bloodState = state.DRAIN
+	
+	add_to_group("Persistent")
+	add_to_group("Globals")
 
 func _process(_delta):
 	
@@ -21,10 +24,11 @@ func _process(_delta):
 	match(bloodState):
 	
 		state.DRAIN:
-			if bloodlust > 0 && bloodlust < 100:
+			if bloodlust > 0:
 				bloodlust -= drainRate
 				value = bloodlust
-			else:
+			
+			if bloodlust >= 100:
 				bloodState = state.EMPOWERED
 				get_tree().call_group("EnemyLogic", "toggleBloodlust")
 		
@@ -39,3 +43,23 @@ func _process(_delta):
 func addBloodlust(amount):
 	if bloodState != state.EMPOWERED:
 		bloodlust += amount
+		
+func saveData():
+	
+	#BloodState
+	owner.sM.state.sceneIndex["BloodState"] = bloodState
+	
+	#Bloodlust
+	owner.sM.state.sceneIndex["Bloodlust"] = bloodlust
+
+func loadData():
+	
+	#BloodState
+	if owner.sM.state.sceneIndex.has("BloodState"):
+		bloodState = owner.sM.state.sceneIndex["BloodState"]
+	
+	#Bloodlust
+	if owner.sM.state.sceneIndex.has("Bloodlust"):
+		bloodlust = owner.sM.state.sceneIndex["Bloodlust"]
+		value = bloodlust
+	

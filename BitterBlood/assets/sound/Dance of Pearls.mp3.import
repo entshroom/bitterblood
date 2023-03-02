@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Dance of Pearls.mp3-04334e075bfd5c32710e9c4c74429223.mp3str"
+
+[deps]
+
+source_file="res://assets/sound/Dance of Pearls.mp3"
+dest_files=[ "res://.import/Dance of Pearls.mp3-04334e075bfd5c32710e9c4c74429223.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
