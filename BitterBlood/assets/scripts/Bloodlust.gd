@@ -24,15 +24,17 @@ func _process(_delta):
 	match(bloodState):
 	
 		state.DRAIN:
+			if bloodlust >= 100:
+				print("Change State")
+				bloodState = state.EMPOWERED
+				get_tree().call_group("EnemyLogic", "toggleBloodlust")
+
 			if bloodlust > 0:
 				bloodlust -= drainRate
 				value = bloodlust
-			
-			if bloodlust >= 100:
-				bloodState = state.EMPOWERED
-				get_tree().call_group("EnemyLogic", "toggleBloodlust")
 		
 		state.EMPOWERED:
+			print("We Bloodlustin")
 			if bloodlust > 0:
 				bloodlust -= drainRate * 1.5
 				value = bloodlust

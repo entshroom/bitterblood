@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/scripts/PressureDoor.gd" type="Script" id=1]
+[ext_resource path="res://assets/sprites/ribbonBottom.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 59.5, 320 )
+
+[node name="PressureDoor" type="StaticBody2D"]
+scale = Vector2( 0.680001, 0.88 )
+collision_layer = 2
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -3.5, -8 )
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 0.117647, 0.172549, 0.313726, 1 )
+position = Vector2( 1.81899e-12, 1.52588e-05 )
+rotation = -1.5708
+scale = Vector2( 1.60334, 7.68 )
+texture = ExtResource( 2 )

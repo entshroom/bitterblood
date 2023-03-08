@@ -12,7 +12,6 @@ func physicsUpdate(delta: float) -> void:
 		player.velocity.y += delta * player.gravity
 		player.velocity.y = clamp(player.velocity.y, 0, 250)
 		
-		print("Wall Slide!")
 		#Wall Jumping (horrible code look away!!)
 		if Input.is_action_pressed("jump") && Input.is_action_pressed("right") && dir == -1:
 			player.velocity.x = 450 * -dir
@@ -25,7 +24,7 @@ func physicsUpdate(delta: float) -> void:
 		
 
 		#Apply Movement
-		player.velocity = player.move_and_slide(player.velocity,Vector2.UP);
+		player.velocity = player.move_and_slide(player.velocity,Vector2.UP,false,4,0.785398,false);
 		
 		#Return to Idle or Air
 		if player.is_on_floor():

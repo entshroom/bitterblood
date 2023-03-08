@@ -39,7 +39,7 @@ func _process(delta):
 func _input(event):
 	
 	if event.is_action_pressed("mapToggle"):
-		var pause = set_visible(bool(abs(int(is_visible())-1)))
+		set_visible(bool(abs(int(is_visible())-1)))
 		
 		if (is_visible()):
 			get_tree().paused = true

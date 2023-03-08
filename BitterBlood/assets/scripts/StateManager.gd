@@ -24,7 +24,7 @@ func _ready():
 	
 	#Get our subdictionary name
 	sceneName = name
-	
+	print(sceneName)
 	#Access and create a subdictionary if we don't have one yet
 	if !state.sceneIndex.has(sceneName):
 		state.sceneIndex[sceneName] = {}

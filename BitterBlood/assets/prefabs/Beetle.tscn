@@ -43,16 +43,16 @@ extents = Vector2( 64, 28 )
 extents = Vector2( 102, 32 )
 
 [node name="Beetle" type="KinematicBody2D"]
+scale = Vector2( 2, 2 )
 collision_layer = 4
-collision_mask = 2
+collision_mask = 114
 script = ExtResource( 1 )
-speed = 100
+speed = 300
 hp = 3
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -12 )
 frames = SubResource( 8 )
-frame = 4
 playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
@@ -62,8 +62,8 @@ shape = SubResource( 1 )
 [node name="Floorchecker" type="RayCast2D" parent="."]
 position = Vector2( 72, 0 )
 enabled = true
-cast_to = Vector2( 0, 40 )
-collision_mask = 2
+cast_to = Vector2( 0, 34 )
+collision_mask = 34
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 4
@@ -71,3 +71,8 @@ collision_layer = 4
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2( 2, 0 )
 shape = SubResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

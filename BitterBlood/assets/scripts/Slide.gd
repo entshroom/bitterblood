@@ -9,15 +9,15 @@ func physicsUpdate(delta: float) -> void:
 	var floorNormal = player.get_floor_normal()
 	
 	#Add Normal to Velocity
-	player.velocity += floorNormal * 2
+	player.velocity += floorNormal
 	
 	#You're too slow!
 	if player.velocity.y > 0:
-		jumpForce += 3
+		jumpForce += 8
 	else:
-		jumpForce = 200.0
+		jumpForce = 1200.0
 	
-	jumpForce = clamp(jumpForce, 200.0, 1200.0)
+	jumpForce = clamp(jumpForce, 1200.0, 2400.0)
 	
 	print(jumpForce)
 

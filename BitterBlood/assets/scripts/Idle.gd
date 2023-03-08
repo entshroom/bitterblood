@@ -12,16 +12,30 @@ func update(_delta: float) -> void:
 		stateMachine.transitionTo("Air",{doDrop = true})
 
 	#Jump
-	if Input.is_action_just_pressed("jump"):
+	if Input.is_action_just_pressed("jump") && player.canJump:
 		#Because Air handles two different actions, we can use message to
 		#tell the state what it should be doing.
 		stateMachine.transitionTo("Air",{doJump = true})
-	elif Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right"):
+	elif Input.is_action_just_pressed("left") && player.canMove || Input.is_action_just_pressed("right") && player.canMove:
 		stateMachine.transitionTo("Run")
 	
 	#Attack
-	if Input.is_action_just_pressed("attack"):
+	if player.canAttack && Input.is_action_just_pressed("attack"):
 		stateMachine.transitionTo("Attack")
+
+	#Knockback
+	if player.knockback:
+		player.velocity.x = player.knockbackForce * -player.direction
+		player.velocity.y = -player.knockbackForce
+		stateMachine.transitionTo("Knockback")
+
+	#Shoot Cannon
+	if Input.is_action_just_pressed("brimstoneCannon") && player.brimstoneCannon:
+		stateMachine.transitionTo("BrimstoneCannon")
+
+	#Dash 
+	if player.doubleTap && player.hasDash && player.canDash:
+		stateMachine.transitionTo("Dash")
 
 #Continue leftover movement
 func physicsUpdate(_delta: float) -> void:

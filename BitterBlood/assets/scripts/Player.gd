@@ -14,6 +14,7 @@ export(float) var acceleration = 0.5;
 export(int) var jumpHeight = 100; 
 export(float) var jumpCancel = 0.7;
 export(float) var slopeThreshold = 0.25;
+export(int) var knockbackForce
 
 #Health
 export(int) var hpMax = 5;
@@ -27,25 +28,48 @@ onready var stateMachine = $StateMachine
 onready var cast = $Wallchecker;
 onready var cast2 = $Wallchecker2;
 onready var cast3 = $Wallchecker3;
+onready var knockbackTimer = $Timer
+onready var dashTimer = $DashTimer
+
+var cannonBall = preload("res://assets/prefabs/CannonBall.tscn")
 
 #Utility
 var hp
+var invincible = false
 
 #Data Management
 var sM
+var hasKey = false
 
 #Physics
 var velocity = Vector2();
 var snapVector = Vector2();
 var floorNormal =  Vector2.UP;
 var canSwim = false
+var knockback = false
 
 #Trackers
 var direction = 1
 var d = 1
 
+var doubleTap = false
+var tapCountLeft = 0
+var tapCountRight = 0
+var maxTime = 0.2
+var dtapTime = 0
+
 #Cooldowns
 var canAirAttack = true
+var canInteract = true
+var canMove = true
+var canAttack = true
+var canJump = true
+var canDash = true
+
+export(bool) var hasWallJump = false
+export(bool) var hasDash = false
+export(bool) var canKillGhosts = false
+export(bool) var brimstoneCannon = false
 
 func _ready():
 	sM = owner
@@ -71,13 +95,24 @@ func setHealth(value = hpMax):
 
 	emit_signal("health_changed", hp)
 
-func takeDamage(value):
-	hp -= value
-	
-	if hp <= 0:
-		get_tree().reload_current_scene() 
+func takeDamage(value, apply_knockback = true):
+	if !knockback && !invincible:
+		hp -= value
+		if apply_knockback:
+			knockback = true
+		emit_signal("health_changed", hp)
+
+		if hp <= 0:
+			if sM.state.sceneIndex.has("RespawnPosition"):
+				setHealth()
+				emit_signal("bloodlust_gained", 100)
+				get_tree().call_group("Persistent","saveData")
+				get_tree().call_group("Persistent","loadData")
+				position = sM.state.sceneIndex["RespawnPosition"]
+			else:
+				var _error = get_tree().reload_current_scene()
 		
-	emit_signal("health_changed", hp)
+
 
 func getDirection(animate := true) -> int:
 	var spd = int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
@@ -113,6 +148,12 @@ func _process(_delta):
 	d = getDirection()
 	if d != 0:
 		direction = d
+		
+	#Interactables
+	if Input.is_action_just_pressed("interact") && canInteract:
+		get_tree().call_group("Interactable", "checkInteract", self)
+
+	countDoubleTap(_delta)
 
 
 func _physics_process(_delta):
@@ -129,6 +170,12 @@ func saveData():
 	sM.state.sceneIndex["MaxHP"] = hpMax
 	sM.state.sceneIndex["HP"] = hp
 	print("HP Saved: " + str(sM.state.sceneIndex["HP"]))
+	
+	#Unlocks
+	sM.state.sceneIndex["WallJumpUnlocked"] = hasWallJump
+	sM.state.sceneIndex["DashUnlocked"] = hasDash
+	sM.state.sceneIndex["CanKillGhosts"] = canKillGhosts
+	sM.state.sceneIndex["BrimstoneCannon"] = brimstoneCannon
 
 func loadData():
 
@@ -143,11 +190,24 @@ func loadData():
 	if sM.state.sceneIndex.has("MaxHP"):
 		hpMax = sM.state.sceneIndex["MaxHP"]
 		print("HP Max" + str(hpMax))
+	
+	#Unlocks
+	if sM.state.sceneIndex.has("WallJumpUnlocked"):
+		hasWallJump = sM.state.sceneIndex["WallJumpUnlocked"]
+	
+	if sM.state.sceneIndex.has("CanKillGhosts"):
+		canKillGhosts = sM.state.sceneIndex["CanKillGhosts"]
+
+	if sM.state.sceneIndex.has("BrimstoneCannon"):
+		brimstoneCannon = sM.state.sceneIndex["BrimstoneCannon"]
+		
+	if sM.state.sceneIndex.has("DashUnlocked"):
+		hasDash = sM.state.sceneIndex["DashUnlocked"]
 
 
 func _on_Hitbox_area_entered(area):
 	#KILL ALL WHO OPPOSE US
-	if area.is_in_group("Enemies"):
+	if area.is_in_group("Enemies") && !area.is_in_group("Spikes"):
 		area.owner.takeDamage(1)
 		
 		if area.owner.hp <= 0 && area.owner.bloodlust:
@@ -158,12 +218,56 @@ func _on_Hitbox_area_entered(area):
 
 func _on_Hurtbox_area_entered(area):
 	if area.is_in_group("Enemies"):
-		takeDamage(1)
+		if !area.owner.is_in_group("Ghosts") || area.owner.is_in_group("Ghosts") && area.owner.hostile:
+			takeDamage(1)
 		emit_signal("bloodlust_gained", 5)
 
 
 func _on_Hurtbox_body_entered(body):
+	if body.is_in_group("HiddenWall"):
+		body.set_modulate(Color(1,1,1,0.5))
 	if body.is_in_group("Spikes"):
 		takeDamage(1)
 		print("Spikes")
 		emit_signal("bloodlust_gained", 5)
+
+
+func _on_Hurtbox_body_exited(body):
+	if body.is_in_group("HiddenWall"):
+		body.set_modulate(Color(1,1,1,1))
+
+func countDoubleTap(delta):
+	
+	if dtapTime < maxTime:
+		dtapTime += 1 * delta
+		
+		if Input.is_action_just_pressed("left"):
+			dtapTime = 0
+			tapCountLeft += 1
+
+		if Input.is_action_just_pressed("right"):
+			dtapTime = 0
+			tapCountRight += 1
+		
+		if tapCountLeft > 0 && tapCountRight > 0:
+			dtapTime = 0
+			tapCountLeft = 0
+			tapCountRight = 0
+		
+		if tapCountLeft >= 2 || tapCountRight >= 2:
+			doubleTap = true
+			tapCountLeft = 0
+			tapCountRight = 0
+	else:
+		doubleTap = false
+		dtapTime = 0
+		tapCountLeft = 0
+		tapCountRight = 0
+#var doubleTap = false
+#var tapCount = 0
+#var maxTime = 5
+#var dtapTime = 0
+
+
+func _on_DashTimer_timeout():
+	canDash = true

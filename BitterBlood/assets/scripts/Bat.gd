@@ -3,6 +3,7 @@ extends KinematicBody2D
 #Export Variables
 export(int) var speed = 20
 export(int) var direction = 1
+export(int) var hp = 3
 
 #Onready Variables
 onready var detectionCollider = $Detectionbox/Collider
@@ -11,6 +12,7 @@ onready var timer = $Timer
 
 
 #Variables
+var bloodlust = false
 var target
 var targetLocation
 var origin
@@ -22,11 +24,14 @@ var enemyState = state.IDLE
 
 func _ready():
 	
+	add_to_group("EnemyLogic")
+	hitbox.add_to_group("Enemies")
+	
 	#Determine Origin
-	origin = global_position
+	origin = position
 
 	#Find Target
-	target = get_node("/root/World/Player")
+	target = get_node("/root/" + owner.name + "/Player")
 	targetLocation = target.position
 	
 	#Set Direction
@@ -62,6 +67,19 @@ func _process(delta):
 				speed *= direction
 
 
+func takeDamage(amount):
+	hp -= amount
+	
+	if hp <= 0:
+		queue_free()
+
+func toggleBloodlust():
+	match (bloodlust):
+		true:
+			bloodlust = false
+		false:
+			bloodlust = true
+			
 func _on_Detectionbox_body_entered(body):
 	if enemyState != state.FLY:
 		enemyState = state.DIVE
@@ -81,7 +99,3 @@ func _on_VisibilityNotifier2D_screen_entered():
 		set_visible(true)
 		enemyState = state.IDLE
 
-
-func _on_Hitbox_body_entered(body):
-	if is_visible():
-		body.takeDamage(1)

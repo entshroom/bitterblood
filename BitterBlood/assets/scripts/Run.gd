@@ -36,7 +36,7 @@ func physicsUpdate(delta: float) -> void:
 		player.drop();
 
 	#Jump
-	if Input.is_action_just_pressed("jump") && player.is_on_floor():
+	if Input.is_action_just_pressed("jump") && player.is_on_floor() && player.canJump:
 		stateMachine.transitionTo("Air",{doJump = true})
 	elif is_equal_approx(dir,0.0):
 		stateMachine.transitionTo("Idle")
@@ -50,8 +50,22 @@ func physicsUpdate(delta: float) -> void:
 		stateMachine.transitionTo("Slide")
 
 	#Attack
-	if Input.is_action_just_pressed("attack"):
+	if player.canAttack && Input.is_action_just_pressed("attack"):
 		stateMachine.transitionTo("Attack")
+		
+	#Knockback
+	if player.knockback:
+		player.velocity.x = player.knockbackForce * -player.direction
+		player.velocity.y = -player.knockbackForce
+		stateMachine.transitionTo("Knockback")
+	
+	#Shoot Cannon
+	if Input.is_action_just_pressed("brimstoneCannon") && player.brimstoneCannon:
+		stateMachine.transitionTo("BrimstoneCannon")
+
+	#Dash 
+	if player.doubleTap && player.hasDash && player.canDash:
+		stateMachine.transitionTo("Dash")
 
 #Reset Snap Vector
 func exit() -> void:

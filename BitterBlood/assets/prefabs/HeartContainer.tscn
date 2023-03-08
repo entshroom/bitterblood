@@ -1,18 +1,18 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://assets/sprites/holyWater.png" type="Texture" id=1]
+[ext_resource path="res://assets/sprites/Heartcontainer.png" type="Texture" id=1]
 [ext_resource path="res://assets/scripts/HeartContainer.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 268, 256 )
+extents = Vector2( 48, 44 )
 
 [node name="HeartContainer" type="Area2D"]
+scale = Vector2( 2, 2 )
 collision_layer = 8
 script = ExtResource( 2 )
 heartCount = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -4, -32 )
 shape = SubResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]

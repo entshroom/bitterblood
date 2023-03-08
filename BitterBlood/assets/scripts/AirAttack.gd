@@ -2,7 +2,7 @@ extends PlayerState
 
 export var animationOver = false
 
-func enter(msg := {}) -> void:
+func enter(_msg := {}) -> void:
 	
 	#Propel Forward
 	player.velocity.y = 0
@@ -23,3 +23,9 @@ func physicsUpdate(_delta: float) -> void:
 	
 	#apply leftover movement
 	player.velocity = player.move_and_slide_with_snap(player.velocity,player.snapVector,Vector2.UP);
+
+	#Knockback
+	if player.knockback:
+		player.velocity.x = player.knockbackForce * -player.direction
+		player.velocity.y = -player.knockbackForce
+		stateMachine.transitionTo("Knockback")

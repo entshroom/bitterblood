@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/scripts/Water.gd" type="Script" id=1]
+[ext_resource path="res://assets/scripts/smooth_path_modified.gd" type="Script" id=2]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array(  )
+}
+
+[node name="Water" type="Node2D"]
+script = ExtResource( 1 )
+spread = 0.004
+springDistance = 200
+springNumber = 60
+depth = 200
+
+[node name="waterPolygon" type="Polygon2D" parent="."]
+color = Color( 0.0784314, 0.941176, 0.941176, 0.403922 )
+antialiased = true
+
+[node name="waterBorder" type="Path2D" parent="."]
+curve = SubResource( 1 )
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

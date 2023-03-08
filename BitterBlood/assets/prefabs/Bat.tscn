@@ -7,15 +7,17 @@
 extents = Vector2( 32, 32 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 256, 96 )
+extents = Vector2( 512, 96 )
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 24, 24 )
 
 [node name="Bat" type="KinematicBody2D"]
+scale = Vector2( 2, 2 )
 collision_layer = 4
 collision_mask = 2
 script = ExtResource( 2 )
+speed = 600
 
 [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
 
@@ -30,7 +32,7 @@ collision_layer = 4
 monitorable = false
 
 [node name="Collider" type="CollisionShape2D" parent="Detectionbox"]
-position = Vector2( 256, 96 )
+position = Vector2( 512, 96 )
 shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -54,8 +56,8 @@ shape = SubResource( 1 )
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
+autostart = true
 
 [connection signal="screen_entered" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_entered"]
 [connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
-[connection signal="body_entered" from="Hitbox" to="." method="_on_Hitbox_body_entered"]
 [connection signal="body_entered" from="Detectionbox" to="." method="_on_Detectionbox_body_entered"]

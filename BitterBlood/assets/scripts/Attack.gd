@@ -2,7 +2,7 @@ extends PlayerState
 
 export var animationOver = false
 
-func enter(msg := {}) -> void:
+func enter(_msg := {}) -> void:
 	#play Animation
 	animationOver = false
 	if !player.anim.is_playing():
@@ -15,6 +15,13 @@ func update(_delta: float) -> void:
 
 func physicsUpdate(_delta: float) -> void:
 	
+	
+	#Knockback
+	if player.knockback:
+		player.velocity.x = player.knockbackForce * -player.direction
+		player.velocity.y = -player.knockbackForce
+		stateMachine.transitionTo("Knockback")
+		
 	#slow to a stop
 	player.velocity.x = lerp(player.velocity.x, 0, player.friction)
 	

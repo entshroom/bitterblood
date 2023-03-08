@@ -46,7 +46,7 @@ func physicsUpdate(delta: float) -> void:
 	if player.is_on_floor():
 		if is_equal_approx(player.velocity.x, 0.0):
 			stateMachine.transitionTo("Idle")
-		else:
+		elif player.canMove:
 			stateMachine.transitionTo("Run")
 
 	#Touching Water
@@ -54,13 +54,27 @@ func physicsUpdate(delta: float) -> void:
 		stateMachine.transitionTo("Water")
 
 	#Wall Sliding
-	if player.isNearWall():
+	if player.isNearWall() && player.hasWallJump:
 		stateMachine.transitionTo("WallSlide",{wallDir = lastDir})
 		
 	#Attack
-	if  Input.is_action_just_pressed("attack") && player.canAirAttack:
+	if  Input.is_action_just_pressed("attack") && player.canAirAttack && player.canAttack:
 		player.canAirAttack = false
 		stateMachine.transitionTo("AirAttack")
+
+	#Knockback
+	if player.knockback:
+		player.velocity.x = player.knockbackForce * -player.direction
+		player.velocity.y = -player.knockbackForce
+		stateMachine.transitionTo("Knockback")
+
+	#Shoot Cannon
+	if Input.is_action_just_pressed("brimstoneCannon") && player.brimstoneCannon:
+		stateMachine.transitionTo("BrimstoneCannon")
+		
+	#Dash 
+	if player.doubleTap && player.hasDash && player.canDash:
+		stateMachine.transitionTo("Dash")
 
 #Reset State Vars
 func exit() -> void:

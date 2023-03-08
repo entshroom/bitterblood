@@ -10,11 +10,11 @@ var currentBox
 func _ready():
 	textBox.append_bbcode("[center]" + message + "[/center]")
 
-func _on_TutorialStatue_area_entered(area):
+func _on_TutorialStatue_area_entered(_area):
 	print("Collision Registered!")
 	textBox.set_visible(true)
 	
 
 
-func _on_TutorialStatue_area_exited(area):
+func _on_TutorialStatue_area_exited(_area):
 	textBox.set_visible(false)

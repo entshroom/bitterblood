@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/resources/HiddenWall.tres" type="TileSet" id=1]
+[ext_resource path="res://assets/scripts/GroupAssign.gd" type="Script" id=2]
+
+[node name="HiddenWall" type="TileMap"]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 128, 128 )
+show_collision = true
+collision_layer = 128
+collision_mask = 0
+format = 1
+script = ExtResource( 2 )
+groupName = "HiddenWall"
